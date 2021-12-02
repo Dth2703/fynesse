@@ -1,6 +1,6 @@
 from .config import *
 
-from access import *
+from .access import *
 
 """These are the types of import we might expect in this file
 import pandas
