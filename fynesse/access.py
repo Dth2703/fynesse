@@ -216,7 +216,7 @@ def create_db_postcode_schema(conn):
 
     return
 
-def set_index_pp_data(conn):
+def set_index_postcode_data(conn):
     """
     Creates additional index for the `postcode_data` table.
     """
