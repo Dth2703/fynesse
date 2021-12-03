@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 import statsmodels.api as sm
 
+
 def get_properties(conn, north, south, east, west, p_type, year):
     """
     Get all entries in the `pp_data` table that satisfy the search criteria.
@@ -123,21 +124,23 @@ def predict_price(conn, latitude, longitude, date, property_type):
 
     property_results = get_properties(conn, north, south, east, west, p_type, date)
 
-    results_with_geom = add_geometry_to_property(property_results)
-    col_names = get_nearby_pois(results_with_geom, pois, tags)
+    if len(property_results) > 0:
+        results_with_geom = add_geometry_to_property(property_results)
+        col_names = get_nearby_pois(results_with_geom, pois, tags)
 
-    x = results_with_geom[col_names]
-    X = np.asarray(x)
-    X = sm.add_constant(X)
-    y = np.asarray(results_with_geom.price)
+        x = results_with_geom[col_names]
+        X = np.asarray(x)
+        X = sm.add_constant(X)
+        y = np.asarray(results_with_geom.price)
 
-    model = sm.OLS(y, X)
-    results = model.fit()
+        model = sm.OLS(y, X)
+        results = model.fit()
 
-    pred_point = Point(latitude, longitude)
+        pred_point = Point(latitude, longitude)
 
-    x_pred = get_nearby_for_prediction(pred_point, pois, tags)
-    prediction = results.predict(x_pred)
+        x_pred = get_nearby_for_prediction(pred_point, pois, tags)
+        prediction = results.predict(x_pred)
 
-    return round(prediction[0])
-
+        return round(prediction[0])
+    else:
+        return -1
