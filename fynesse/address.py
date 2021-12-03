@@ -137,5 +137,5 @@ def predict_price(conn, latitude, longitude, date, property_type):
     x_pred = get_nearby_for_prediction(pred_point, pois, tags)
     prediction = results.predict(x_pred)
 
-    return round(prediction)
+    return round(prediction[0])
 
