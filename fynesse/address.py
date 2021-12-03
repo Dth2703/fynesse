@@ -115,8 +115,7 @@ def predict_price(conn, latitude, longitude, date, property_type):
             "tourism": True}
 
     north, south, east, west = get_bounds(latitude, longitude, box_width, box_height)
-    p_type = f"""'"{property_type}"'"""
-    print(p_type)
+    p_type = f'"{property_type}"'
 
     pois = get_pois(latitude, longitude, box_width, box_height, tags)
 
