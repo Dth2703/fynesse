@@ -118,7 +118,7 @@ def predict_price(conn, latitude, longitude, date, property_type):
 
     pois = get_pois(latitude, longitude, box_width, box_height, tags)
 
-    property_results = get_properties(conn, north, south, east, west, p_type, year)
+    property_results = get_properties(conn, north, south, east, west, p_type, date)
 
     results_with_geom = add_geometry_to_property(property_results)
     col_names = get_nearby_pois(results_with_geom, pois, tags)
