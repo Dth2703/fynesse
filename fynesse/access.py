@@ -43,30 +43,6 @@ def create_connection(user, password, host, database, port=3306):
         print(f"Error connecting to the MariaDB Server: {e}")
     return conn
 
-def select_top(conn, table,  n):
-    """
-    Query n first rows of the table
-    :param conn: the Connection object
-    :param table: the table to query
-    :param n: number of rows to query
-    """
-    cur = conn.cursor()
-    cur.execute(f'SELECT * FROM {table} LIMIT {n}')
-
-    rows = cur.fetchall()
-    return rows
-
-def head(conn, table, n=10):
-    """
-    Prints the first n rows of a table
-    """
-
-    rows = select_top(conn, table, n)
-    for r in rows:
-        print(r)
-    
-    return
-
 def download_price_data(start, end):
     """
     Downloads property price data from <start> to <end> year, inclusive.
@@ -234,14 +210,14 @@ def set_index_postcode_data(conn):
     
     return
 
-def upload_price_data(conn, start, end):
+def upload_postcode_data(conn):
     """
     Uploads postcode data.
     """
 
     cur = conn.cursor()
     cur.execute(f"""
-    LOAD DATA LOCAL INFILE 'postcode.csv' INTO TABLE postcode_data
+    LOAD DATA LOCAL INFILE 'open_postcode_geo.csv' INTO TABLE postcode_data
     FIELDS TERMINATED BY ','
     LINES STARTING BY '' TERMINATED BY '\n';
     """)
