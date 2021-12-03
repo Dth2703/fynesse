@@ -124,7 +124,7 @@ def predict_price(conn, latitude, longitude, date, property_type):
     results_with_geom = add_geometry_to_property(property_results)
     col_names = get_nearby_pois(results_with_geom, pois, tags)
 
-    x = [col_names]
+    x = results_with_geom[col_names]
     X = np.asarray(x)
     X = sm.add_constant(X)
     y = np.asarray([house[0] for house in results_with_geom])
