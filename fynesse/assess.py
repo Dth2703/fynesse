@@ -45,7 +45,7 @@ def head(conn, table, n=10):
     
     return
 
-def plot_pois(edges, pois):
+def plot_pois(edges, pois, north, south, east, west):
     fig, ax = plt.subplots(figsize=plot.big_figsize)
 
     # Plot street edges
