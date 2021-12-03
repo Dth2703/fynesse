@@ -73,9 +73,10 @@ def get_nearby_pois(results, pois, tags):
     pois_centroids = []
     col_names = []
     for tag in tags.keys():
-        gdf = pois[pois[tag].notnull()]
-        pois_centroids.append(gdf['geometry'].centroid)
-        col_names.append(f"{tag}_near")
+        if tag in pois.columns:
+            gdf = pois[pois[tag].notnull()]
+            pois_centroids.append(gdf['geometry'].to_crs('EPSG:3395').centroid.to_crs('EPSG:4326'))
+            col_names.append(f"{tag}_near")
     
     for index, row in results.iterrows():
         for i in range(len(pois_centroids)):
@@ -94,9 +95,10 @@ def get_nearby_for_prediction(pred_point, pois, tags):
     x_pred = [[]]
     x_pred[0].append(1)
     for tag in tags.keys():
-        gdf = pois[pois[tag].notnull()]
-        pois_centroid = gdf['geometry'].centroid
-        x_pred[0].append(sum(pois_centroid.geom_almost_equals(pred_point, decimal=2, align=False)))
+        if tag in pois.columns:
+            gdf = pois[pois[tag].notnull()]
+            pois_centroid = gdf['geometry'].to_crs('EPSG:3395').centroid.to_crs('EPSG:4326')
+            x_pred[0].append(sum(pois_centroid.geom_almost_equals(pred_point, decimal=2, align=False)))
     
     X_pred = np.asarray(x_pred)
     X_pred = sm.add_constant(X_pred)
