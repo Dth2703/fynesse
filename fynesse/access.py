@@ -3,6 +3,7 @@ from .config import *
 from .assess import *
 
 import csv
+import osmnx as ox
 import pymysql
 import requests
 import urllib.request
@@ -281,7 +282,7 @@ def get_streets(latitude, longitude, box_width, box_height):
     Returns the edges representing streets, as fetched from OpenStreetMap,
     within the bounding box
     """
-    
+
     north, south, east, west = get_bounds(latitude, longitude, box_width, box_height)
     graph = ox.graph_from_bbox(north, south, east, west)
     nodes, edges = ox.graph_to_gdfs(graph)
