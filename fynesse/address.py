@@ -127,7 +127,7 @@ def predict_price(conn, latitude, longitude, date, property_type):
     x = results_with_geom[col_names]
     X = np.asarray(x)
     X = sm.add_constant(X)
-    y = np.asarray([house[0] for house in results_with_geom])
+    y = np.asarray(results_with_geom.price)
 
     model = sm.OLS(y, X)
     results = model.fit()
