@@ -103,7 +103,7 @@ def get_nearby_for_prediction(pred_point, pois, tags):
 def predict_price(latitude, longitude, date, property_type):
     """Price prediction for UK housing."""
 
-    north, south, east, west = get_bounds(latitude, longitude)
+    north, south, east, west = get_bounds(latitude, longitude, box_width, box_height)
     p_type = f"""'"{property_type}"'"""
     print(p_type)
 
