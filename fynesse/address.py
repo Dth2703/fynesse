@@ -3,7 +3,9 @@
 from .access import *
 from shapely.geometry import Point
 
+import geopandas as gpd
 import numpy as np
+import pandas as pd
 import statsmodels.api as sm
 
 def get_properties(conn, north, south, east, west, p_type, year):
