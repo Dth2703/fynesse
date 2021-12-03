@@ -100,7 +100,7 @@ def get_nearby_for_prediction(pred_point, pois, tags):
     X_pred = sm.add_constant(X_pred)
     return X_pred
 
-def predict_price(latitude, longitude, date, property_type):
+def predict_price(conn, latitude, longitude, date, property_type):
     """Price prediction for UK housing."""
 
     box_width = 0.05 # 1 = about 111 km
