@@ -1,5 +1,7 @@
 from .config import *
 
+from .assess import *
+
 import csv
 import pymysql
 import requests
@@ -224,7 +226,66 @@ def upload_postcode_data(conn):
     
     return
 
+def create_db_joined_schema(conn):
+    """
+    Sets up the database schema for the `prices_coordinates_data` table.
+    """
 
+    cur = conn.cursor()
+    cur.execute("""
+    DROP TABLE IF EXISTS `prices_coordinates_data`;
+    CREATE TABLE IF NOT EXISTS `prices_coordinates_data` (
+        `price` int(10) unsigned NOT NULL,
+        `date_of_transfer` date NOT NULL,
+        `postcode` varchar(8) COLLATE utf8_bin NOT NULL,
+        `property_type` varchar(1) COLLATE utf8_bin NOT NULL,
+        `new_build_flag` varchar(1) COLLATE utf8_bin NOT NULL,
+        `tenure_type` varchar(1) COLLATE utf8_bin NOT NULL,
+        `locality` tinytext COLLATE utf8_bin NOT NULL,
+        `town_city` tinytext COLLATE utf8_bin NOT NULL,
+        `district` tinytext COLLATE utf8_bin NOT NULL,
+        `county` tinytext COLLATE utf8_bin NOT NULL,
+        `country` enum('England', 'Wales', 'Scotland', 'Northern Ireland', 'Channel Islands', 'Isle of Man') NOT NULL,
+        `latitude` decimal(11,8) NOT NULL,
+        `longitude` decimal(10,8) NOT NULL,
+        `db_id` bigint(20) unsigned NOT NULL
+    ) DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
+    """)
+
+    return
+
+def get_bounds(latitude, longitude, box_width, box_height):
+    """
+    Get the bounding coordinates for a given latitude and longitude.
+    """
+    north = latitude + box_height/2
+    south = latitude - box_height/2
+    west = longitude - box_width/2
+    east = longitude + box_width/2
+
+    return (north, south, east, west)
+
+def get_pois(latitude, longitude, box_width, box_height, tags):
+    """
+    Get points of interest at <latitude>,<longitude>
+    with a bounding box of size <box_width> by <box_height>.
+    The points matching the <tags> are fetched.
+    """
+
+    north, south, east, west = get_bounds(latitude, longitude, box_width, box_height)
+    pois = ox.geometries_from_bbox(north, south, east, west, tags)
+    return pois
+
+def get_streets(latitude, longitude, box_width, box_height):
+    """
+    Returns the edges representing streets, as fetched from OpenStreetMap,
+    within the bounding box
+    """
+    
+    north, south, east, west = get_bounds(latitude, longitude, box_width, box_height)
+    graph = ox.graph_from_bbox(north, south, east, west)
+    nodes, edges = ox.graph_to_gdfs(graph)
+    return edges
 
 def data():
     """Read the data from the web or local file, returning structured format such as a data frame"""
