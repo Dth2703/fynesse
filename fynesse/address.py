@@ -74,7 +74,7 @@ def get_nearby_pois(results, pois, tags):
     col_names = []
     for tag in tags.keys():
         gdf = pois[pois[tag].notnull()]
-        pois_centroids.append(gdf['geometry'].to_crs('EPSG:3395').centroidto_crs('EPSG:4326'))
+        pois_centroids.append(gdf['geometry'].to_crs('EPSG:3395').centroid.to_crs('EPSG:4326'))
         col_names.append(f"{tag}_near")
     
     for index, row in results.iterrows():
